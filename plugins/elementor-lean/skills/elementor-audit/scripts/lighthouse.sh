@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Mobile Lighthouse performance run for one or more URLs. Prints one JSON line per URL.
 # Usage: lighthouse.sh <out_dir> <url> [url...]
-# Needs: node, `npm i lighthouse` in the cwd (or global), Chromium at $CHROME_PATH.
+# Needs: node, `npm i lighthouse@12` in the cwd (or global), Chromium at $CHROME_PATH.
+# shortcut: pinned to Lighthouse 12 — 13.x removed/renamed third-party-summary, render-blocking-resources,
+# largest-contentful-paint-element and font-display, so the jq fields below read empty there; upgrade when the jq is ported.
 set -euo pipefail
 out=$1; shift
 mkdir -p "$out"

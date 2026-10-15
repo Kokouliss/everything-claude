@@ -26,4 +26,5 @@ For claude.ai Skills instead: zip each folder under `skills/` and upload it.
 ## Requirements
 
 - A Novamira MCP connection to the site (`mcp__novamira-<site>__…` tools).
-- For Lighthouse: Node 18+, `npm i lighthouse`, Chromium (`CHROME_PATH`).
+- For Lighthouse: Node 18+, `npm i lighthouse@12` (13.x renamed the audits the script reads), Chromium (`CHROME_PATH`).
+- Optional: a PageSpeed Insights API key for field (CrUX) data; the anonymous quota returns HTTP 429 after a few calls.
