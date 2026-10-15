@@ -25,6 +25,12 @@ contents as `code`, no `<?php` tag). It returns:
 page KB, request count, DOM size, unused JS/CSS, `lcp_lazy` (hero image lazy-loaded) and
 `third_party_kb`. Measure the home page, one inner page, and the checkout or booking page if any.
 
+For a site without Novamira access (a competitor, a reference, a prospect), `scripts/profile-url.sh <url> [out_dir]`
+reads the public HTML and prints one JSON object: Elementor/Pro version, theme, cache or optimizer plugin,
+add-on packs, font families requested, GTM containers and gtag ids, Facebook pixel, third-party hosts,
+animated elements, containers vs legacy sections, script/stylesheet counts, whether the first images are
+lazy-loaded, video/iframe counts — plus the Lighthouse line when an out_dir is given.
+
 Then open the saved JSON for the worst page and pull:
 `network-requests` sorted by size, `third-party-summary`, `render-blocking-resources`,
 `largest-contentful-paint-element`, `bootup-time`.
