@@ -81,6 +81,19 @@ foreach ( $actions as $action ) {
 			$report[ $action ] = "lazy-load set on $changed video widgets";
 			break;
 
+		case 'litespeed_optimize':
+			if ( ! defined( 'LSCWP_V' ) ) {
+				$report[ $action ] = 'skipped: LiteSpeed Cache not active';
+				break;
+			}
+			// Validated on staging.limnoupolis.gr. media-lazy is left out on purpose: it raised CLS from 0 to 0.107 there.
+			foreach ( [ 'optm-ggfonts_async' => true, 'optm-css_min' => true, 'optm-js_min' => true, 'optm-localize' => true, 'optm-js_defer' => 1 ] as $k => $v ) {
+				$set_option( 'litespeed.conf.' . $k, $v );
+			}
+			do_action( 'litespeed_purge_all' );
+			$report[ $action ] = 'fonts async, css/js minify, localize, js defer on; cache purged';
+			break;
+
 		case 'revisions_prune':
 			if ( ! $revision_confirm ) {
 				$report[ $action ] = 'skipped: set $revision_confirm = true (irreversible)';

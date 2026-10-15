@@ -28,6 +28,7 @@ Every action saves its before-value in the option `elementor_lean_undo`; `undo` 
 | `optimized_markup_on` | enables Elementor's reduced DOM output | yes | visual check |
 | `element_cache_on` | sets element cache to 24h when it was disabled | yes | check dynamic widgets (bookings, filters) |
 | `video_lazy` | sets lazy-load on every video widget; backs up each page's data first | yes | visual check |
+| `litespeed_optimize` | LiteSpeed Cache: Google Fonts async, CSS/JS minify, localize, deferred JS; purges. Does not enable lazy images (caused CLS 0.107 on a test site) | yes | visual check (deferred JS) |
 | `revisions_prune` | deletes revisions older than `$revision_days` (default 90) | **no** | **yes** |
 | `undo` | restores every saved before-value and page backup | — | no |
 
