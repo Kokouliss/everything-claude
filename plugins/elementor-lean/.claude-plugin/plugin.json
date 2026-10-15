@@ -1,0 +1,7 @@
+{
+  "name": "elementor-lean",
+  "version": "0.1.0",
+  "description": "Build, audit and debloat Elementor sites so they score high on PageSpeed. Works through the Novamira WordPress connection.",
+  "author": { "name": "Kokouliss" },
+  "keywords": ["elementor", "wordpress", "pagespeed", "performance", "novamira"]
+}

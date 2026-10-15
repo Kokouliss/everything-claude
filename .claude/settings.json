@@ -5,9 +5,16 @@
         "source": "github",
         "repo": "affaan-m/ECC"
       }
+    },
+    "everything-claude": {
+      "source": {
+        "source": "github",
+        "repo": "Kokouliss/everything-claude"
+      }
     }
   },
   "enabledPlugins": {
-    "ecc@ecc": true
+    "ecc@ecc": true,
+    "elementor-lean@everything-claude": true
   }
 }
