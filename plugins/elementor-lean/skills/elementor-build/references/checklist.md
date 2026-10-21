@@ -16,4 +16,5 @@ Per key page (home, main inner page, checkout/booking)
 - [ ] All videos lazy-loaded with poster
 - [ ] No `<script>` inside HTML widgets
 - [ ] Plugin CSS not needed on this page is unloaded (jQuery UI, booking calendar, Woo on brochure pages)
-- [ ] Mobile Lighthouse: score ≥ 85, LCP ≤ 2.5 s, CLS ≤ 0.1, ≤ 1.5 MB, ≤ 60 requests
+- [ ] Mobile Lighthouse (median of 3): score ≥ 95, LCP ≤ 2.0 s, CLS ≤ 0.05, ≤ 1 MB, ≤ 50 requests, 0 render-blocking resources
+- [ ] LCP element is text or an `<img>` (never a video, slideshow, background container or cookie banner)

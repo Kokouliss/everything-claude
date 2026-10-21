@@ -45,6 +45,6 @@ animations in the first screen, one cache plugin and almost no add-on packs. The
 
 - Create pages with `novamira/elementor-set-content`, using only the widgets listed above.
 - After a batch of pages, run `elementor-audit` and fix anything it flags before handover.
-- Targets on mobile Lighthouse before handover: score ≥ 85, LCP ≤ 2.5 s, CLS ≤ 0.1, page ≤ 1.5 MB, ≤ 60 requests.
+- Targets on mobile Lighthouse before handover: score ≥ 95, LCP ≤ 2.0 s, CLS ≤ 0.05, page ≤ 1 MB, ≤ 50 requests, zero render-blocking resources, LCP element is text or an `<img>`.
 
 `references/checklist.md` is the handover checklist.
