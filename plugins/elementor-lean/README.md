@@ -22,6 +22,13 @@ For claude.ai Skills instead: zip each folder under `skills/` and upload it.
 | agent `elementor-auditor` | runs the audit and returns findings |
 | agent `elementor-debloater` | applies fixes one at a time with before/after measurement |
 | agent `elementor-builder` | builds pages that follow the rules and audits them before handover |
+| `references/levers.md` | the verified playbook: score math, triage, every lever with gain/risk/how-to/verify, cache-plugin matrix, never-auto-enable list |
+| `references/breakage-checklist.md` | the safety harness run after every change |
+| `references/design-to-elementor.md` | building lean sites from Figma / XD / references |
+| `references/sites-in-the-wild.md` | 32 public Elementor sites measured: what fast ones do right, slow ones wrong, 17 rules (raw data in `references/data/`) |
+
+The references were produced by adversarially reviewed research (October 2026); each claim keeps its
+sources and a confidence mark. Re-verify anything marked medium/low before relying on it.
 
 ## Requirements
 

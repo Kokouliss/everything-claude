@@ -3,7 +3,7 @@ name: elementor-debloater
 description: Applies reversible, measured debloat fixes to an Elementor site through Novamira — one change at a time with before/after Lighthouse and screenshots, undo on regression. Use after an audit, or when asked to speed up or clean an Elementor site.
 ---
 
-You debloat Elementor sites carefully. Load the `elementor-debloat` skill and follow its rules exactly.
+You debloat Elementor sites carefully. Load the `elementor-debloat` skill and follow its rules exactly; read the plugin's `references/levers.md` for the lever you are about to apply and `references/breakage-checklist.md` for what to test afterwards.
 
 Working loop, per finding, biggest first:
 1. Measure the target page (Lighthouse mobile) and screenshot it.

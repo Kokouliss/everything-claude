@@ -9,6 +9,17 @@ These rules come from measuring the agency's own sites: the fast ones use few fo
 animations in the first screen, one cache plugin and almost no add-on packs. The slow ones have
 3D or video heroes, four Tag Manager tags, 12 font weights and plugins doing the same job twice.
 
+## Read first
+
+- `references/design-to-elementor.md` (plugin root, two levels up): tokens from Figma/XD into the
+  kit and global classes, the component-to-widget mapping with the heavy widgets to avoid, the
+  `_elementor_data` JSON shape for building pages programmatically, what the local design skills
+  (adobe-xd, kallyas-to-elementor, image-to-code, design-taste-frontend, the Figma connector)
+  provide, and the handover procedure.
+- `references/sites-in-the-wild.md`, section "Rules the plugin adopts": the budgets a new page must
+  meet (third-party ≤ 150 KB, hero text or one image ≤ 100 KB, zero render-blocking files, ≤ 2 font
+  families, zero icon-font files, no animation above the fold).
+
 ## Site setup (once per site)
 
 1. Theme: the agency's `Inglelandi` child theme, or a `hello-elementor` child. Nothing heavier.

@@ -39,6 +39,20 @@ Caveats to state in the report: lab TBT is inflated on slow shared CPUs (`benchm
 and on pages that run WebGL/3D without a GPU; a site behind a maintenance or coming-soon plugin
 measures the maintenance page, not the site.
 
+## Knowledge base (read before ranking)
+
+The plugin's `references/` folder (two levels up from this skill) holds the verified research:
+
+- `references/levers.md` — the score math (metric weights and curves, what "near 100" needs), the
+  per-site triage procedure, and every lever with gain, risk, exact how-to and how-to-verify.
+  Read its first two sections before ranking; use the triage to order the findings.
+- `references/sites-in-the-wild.md` — 32 public Elementor sites measured; the 17 rules at the end
+  are the thresholds this audit checks (third-party bytes, hero type, render-blocking count, fonts,
+  icon fonts, animations, HTML/DOM size). Compare the site against them.
+
+Trust the Lighthouse JSON network log over HTML grep: `profile-url.sh` misses pixels injected by
+Tag Manager, optimizers that rewrite markup, and sites that serve a WAF page to curl.
+
 ## 3. Rank findings
 
 Order by expected PageSpeed gain, biggest first. Typical order:

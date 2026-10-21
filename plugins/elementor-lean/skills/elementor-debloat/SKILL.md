@@ -7,6 +7,15 @@ description: Remove bloat from an existing Elementor site with reversible, measu
 
 Fix the biggest finding first, measure, keep or undo. One change at a time.
 
+## Read first
+
+- `references/levers.md` (plugin root, two levels up): the ordered playbook — what each lever is
+  worth, exact settings per cache plugin (LiteSpeed Cache, FlyingPress, Perfmatters, WP Rocket,
+  W3TC), when it breaks and the exclusions that fix it, and the **never auto-enable** list.
+- `references/breakage-checklist.md`: the harness to run after every change (screenshots, console
+  errors, interaction smoke tests, tracking still fires, Lighthouse median-of-3). "Without breaking
+  anything" means this checklist passed, not that the page looked fine once.
+
 ## Rules
 
 - Audit first (`elementor-audit`). No audit, no changes.
