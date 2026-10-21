@@ -6,7 +6,7 @@ Gate order per step: purge → console/network diff → interaction smoke tests 
 
 ## 1. Before any change — what to record
 
-**Page set** (`pages.json`, fixed for the engagement): home, one room/product/bookable page, the cart or booking step, one blog/forum page, contact, one home per language, plus any page whose template the step touches. A set that omits the page where the change bites proves nothing (unloading a slider plugin site-wide while only shooting the home page).
+**Page set** (`pages.json`, fixed for the engagement): home, one room/product/bookable page, the cart or booking step, one blog/forum page, contact, one home per language, plus any page whose template the step touches. A set that omits the page where the change bites proves nothing.
 
 **Settings before-values**, as exact serialized values, never from memory:
 
@@ -205,7 +205,7 @@ After any hero or image lever also: no asset of an `elementor-hidden-mobile` tre
 
 **Editor loads and saves.** A dedicated editor-role test user limited to one hidden test page (never a production admin; password outside the repo); a setup project logs in at `/wp-login.php` and saves `playwright/.auth/editor.json`. Test: `goto('/wp-admin/post.php?post=' + ID + '&action=elementor')`; `body` has class `elementor-editor-active`; `#elementor-panel-state-loading` hidden within 90 s (slow hosts exceed 30 s); `#elementor-panel-content-wrapper` visible; `#elementor-preview-iframe` loaded; `page.pageErrors()` empty ([can't edit](https://elementor.com/help/cant-edit-with-elementor/)). Then change a heading on the test page, click the update button (`getByRole('button', { name: /update|publish|δημοσίευση|ενημέρωση/i })` — confirm the locator in the baseline; confidence medium) and verify `wp post get <ID> --field=post_modified` advanced. Known causes of a stuck spinner: Delay/Defer JS applied to logged-in users (Perfmatters), LiteSpeed "Optimize for Guests Only" off with JS defer, CSS/JS Combine, W3TC Minify "Auto" + Combine, Cloudflare Rocket Loader. Safe Mode (Elementor > Editor > Tools in 4.x) isolates only the canvas, not the panel, so "still broken in Safe Mode" is inconclusive for panel failures — attribute with the off-switches in section 10 ([Safe Mode](https://elementor.com/help/what-is-safe-mode/)).
 
-**Theme Builder templates still apply.** On every page in the set the `data-elementor-type` / `data-elementor-id` pairs (header, footer, single, archive) equal the baseline and header and footer are visible; a missing pair means a condition or template stopped applying (page cache after a template edit, Element Cache, stale object cache). Change a Global Color and save a page: both show on the front end after purge, or the object cache is stale.
+**Theme Builder templates still apply.** On every page in the set the `data-elementor-type` / `data-elementor-id` pairs (header, footer, single, archive) equal the baseline and header and footer are visible; a missing pair means a condition or template stopped applying (page cache after a template edit, Element Cache, stale object cache). A changed Global Color shows on the front end after purge, or the object cache is stale.
 
 **Popups still trigger.** Per popup: its trigger → `elementor/popup/show` fires and `.elementor-popup-modal` is visible *and styled* (RUCSS/UCSS strip CSS absent at first render; compare the modal's computed background and position with the baseline). Popups built with V4 atomic elements are the higher-risk class under any RUCSS older than Perfmatters 2.6.9 or the FlyingPress fork's local engine ([Perfmatters changelog](https://perfmatters.io/docs/changelog/)).
 
@@ -272,8 +272,8 @@ Optional diagnostics, tracked separately and never reported as "the score": a co
 **Undo = replay the recorded before-values**, purge, then re-run the gates against the step's own before baseline (not the original site baseline) until green; `wp option get <name>` must equal the recorded value.
 
 - `scripts/debloat.php` with `$actions = ['undo']`: restores every option in `elementor_lean_undo` (deletes those recorded as `__unset__`), restores `_elementor_data` from `_elementor_data_lean_bak`, clears the undo option and the Elementor CSS cache.
-- Other options: `wp option update <name> '<json>' --format=json`; experiments by raw value (or `wp elementor experiments deactivate <name>`).
-- LiteSpeed `wp litespeed-option import <file>`; W3TC `wp w3-total-cache import <file>`; Perfmatters `wp perfmatters disable <key>` (plus `clear-used-css` when RUCSS was involved) or `import-settings <file>`; FlyingPress `wp option update` of the recorded JSON; Script Manager rules reverted in the UI with Testing Mode; `wp db import` only for the irreversible step.
+- Other options: `wp option update <name> '<json>' --format=json`; experiments by raw value.
+- LiteSpeed `wp litespeed-option import <file>`; W3TC `wp w3-total-cache import <file>`; Perfmatters `wp perfmatters disable <key>` (plus `clear-used-css` after RUCSS) or `import-settings <file>`; FlyingPress `wp option update` of the recorded JSON; Script Manager rules reverted in the UI; `wp db import` only for the irreversible step.
 
 **Purge order, after apply and after undo**: Elementor first (`wp elementor flush-css`, which also empties the Element Cache meta) → the optimiser's generated assets (`wp perfmatters clear-used-css`, LiteSpeed purge all, `wp flying-press purge-everything`, W3TC flush — verify the exact subcommand on the installed version) → page cache / CDN → one warming GET → HIT header → gates. Measuring on a MISS compares an uncached "after" with a cached "before".
 
