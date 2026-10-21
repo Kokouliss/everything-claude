@@ -44,11 +44,6 @@ foreach ( $actions as $action ) {
 			$report[ $action ] = 'optimized markup active — check pages with custom CSS';
 			break;
 
-		case 'element_cache_on':
-			$set_option( 'elementor_element_cache_ttl', '24' );
-			$report[ $action ] = 'element cache 24h — check dynamic widgets';
-			break;
-
 		case 'video_lazy':
 			$changed = 0;
 			foreach ( $elementor_docs() as $id ) {
@@ -86,12 +81,13 @@ foreach ( $actions as $action ) {
 				$report[ $action ] = 'skipped: LiteSpeed Cache not active';
 				break;
 			}
-			// Validated on staging.limnoupolis.gr. media-lazy is left out on purpose: it raised CLS from 0 to 0.107 there.
-			foreach ( [ 'optm-ggfonts_async' => true, 'optm-css_min' => true, 'optm-js_min' => true, 'optm-localize' => true, 'optm-js_defer' => 1 ] as $k => $v ) {
+			// Validated on staging.limnoupolis.gr. Left out on purpose: media-lazy (CLS 0 -> 0.107 there) and
+			// optm-localize (localized tag scripts go stale; see references/levers.md, matrix footnote k).
+			foreach ( [ 'optm-ggfonts_async' => true, 'optm-css_min' => true, 'optm-js_min' => true, 'optm-js_defer' => 1 ] as $k => $v ) {
 				$set_option( 'litespeed.conf.' . $k, $v );
 			}
 			do_action( 'litespeed_purge_all' );
-			$report[ $action ] = 'fonts async, css/js minify, localize, js defer on; cache purged';
+			$report[ $action ] = 'fonts async, css/js minify, js defer on; cache purged';
 			break;
 
 		case 'revisions_prune':

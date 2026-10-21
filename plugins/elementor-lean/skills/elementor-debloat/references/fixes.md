@@ -11,7 +11,7 @@ Ordered by typical PageSpeed gain on mobile. "Auto" = `scripts/debloat.php` can 
 | Custom font served as `.woff` / `.ttf` | Convert to `.woff2` (`woff2_compress`), re-upload in Custom Fonts | none | no |
 | `elementor_load_fa4_shim` = yes | Turn off if no `fa fa-` icons are used | icons vanish if FA4 is still used — the script checks first | yes |
 | `e_optimized_markup` off | Turn on | custom CSS targeting old wrappers can break — screenshot pages with custom CSS | yes |
-| `elementor_element_cache_ttl` = disable | Set 24h | dynamic widgets (bookings, filters, cart) may show stale output — test them | yes |
+| `elementor_element_cache_ttl` = disable | Leave it. Element Caching is experimental and shortens uncached renders only; it must stay Inactive on widgets with dynamic tags, shortcodes, cart, booking or user data | stale prices/availability, expired nonces in forms and filters | no — owner OK on pure brochure sites only |
 | Render-blocking CSS from a plugin not used on the page (jQuery UI, booking calendar, WooCommerce on brochure pages) | Unload per page with Perfmatters / FlyingPress / LiteSpeed asset manager | the page may need it in a modal — click through the page | no |
 | Entrance animations / motion effects above the fold | Remove from the first screen only | design decision | no |
 | Many video widgets without lazy-load | Set lazy-load on all video widgets | shows a thumbnail instead of the player until clicked | yes |
