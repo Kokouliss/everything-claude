@@ -5,12 +5,19 @@ PageSpeed. Talks to the sites through the Novamira WordPress connection (MCP).
 
 ## Install
 
+**Claude Code** (CLI, web, IDE) — from this repository's marketplace:
+
 ```
 claude plugin marketplace add Kokouliss/everything-claude
 claude plugin install elementor-lean@everything-claude
 ```
 
-For claude.ai Skills instead: zip each folder under `skills/` and upload it.
+**Claude desktop app (Cowork)** — open `dist/elementor-lean.plugin` from this repository (the same
+plugin zipped; the app shows the files and an Accept button). Rebuild it after changes with
+`cd plugins/elementor-lean && zip -r ../../dist/elementor-lean.plugin . -x '*.DS_Store'`.
+
+Both read the same files: `claude plugin validate plugins/elementor-lean` passes; the only notes are
+for the public plugin directory (no `license`, no icon), which this private plugin does not need.
 
 ## What's inside
 

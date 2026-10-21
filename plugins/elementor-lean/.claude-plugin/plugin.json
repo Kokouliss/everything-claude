@@ -3,5 +3,7 @@
   "version": "0.1.0",
   "description": "Build, audit and debloat Elementor sites so they score high on PageSpeed. Works through the Novamira WordPress connection.",
   "author": { "name": "Kokouliss" },
+  "homepage": "https://github.com/Kokouliss/everything-claude/tree/main/plugins/elementor-lean",
+  "repository": "https://github.com/Kokouliss/everything-claude",
   "keywords": ["elementor", "wordpress", "pagespeed", "performance", "novamira"]
 }
