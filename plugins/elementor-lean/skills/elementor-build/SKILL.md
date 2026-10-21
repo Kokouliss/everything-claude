@@ -20,6 +20,14 @@ animations in the first screen, one cache plugin and almost no add-on packs. The
   meet (third-party ≤ 150 KB, hero text or one image ≤ 100 KB, zero render-blocking files, ≤ 2 font
   families, zero icon-font files, no animation above the fold).
 
+## Design and motion
+
+This skill keeps a page lean; it does not make it beautiful. For the design direction, tokens,
+typography, colour, imagery and the booking/enquiry UX, use `elementor-design` first (it hands you a
+component plan and the Global Classes to build with). For animation and micro-interactions, build the
+page static first, pass the gate below, then hand it to `elementor-motion`: motion is added after
+the LCP, never on the LCP element or above the fold at load, and is measured again afterwards.
+
 ## Site setup (once per site)
 
 1. Theme: the agency's `Inglelandi` child theme, or a `hello-elementor` child. Nothing heavier.

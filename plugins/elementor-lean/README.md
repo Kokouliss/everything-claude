@@ -26,6 +26,11 @@ for the public plugin directory (no `license`, no icon), which this private plug
 | skill `elementor-audit` | read-only audit: server side (`scripts/audit.php` via Novamira) + Lighthouse (`scripts/lighthouse.sh`) → ranked findings |
 | skill `elementor-debloat` | reversible fixes (`scripts/debloat.php`, with `undo`) + the manual playbook in `references/fixes.md` |
 | skill `elementor-build` | rules for building lean pages and the handover checklist |
+| skill `elementor-design` | from brief / Figma / XD / references to a sophisticated design system and complete UX (typography, colour, imagery, layout, booking flows, accessibility) implemented with Global Classes and Variables |
+| skill `elementor-motion` | GSAP, anime.js, CSS scroll-driven and Elementor Interactions — premium motion within the budget: after LCP, transform/opacity only, reduced-motion aware; 12+ recipes with costs |
+| agent `elementor-designer` | turns a brief into direction, tokens and a page plan, then builds it |
+| agent `elementor-motion-designer` | adds animation and micro-interactions to built pages, measures, undoes on regression |
+| agent `elementor-ux-reviewer` | read-only review of a built page: design quality, UX, WCAG 2.2 AA, motion budget, the 95+ rules |
 | agent `elementor-auditor` | runs the audit and returns findings |
 | agent `elementor-debloater` | applies fixes one at a time with before/after measurement |
 | agent `elementor-builder` | builds pages that follow the rules and audits them before handover |
