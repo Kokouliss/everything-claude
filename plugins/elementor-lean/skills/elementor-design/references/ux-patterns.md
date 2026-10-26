@@ -31,7 +31,8 @@ From an NN/g study with 179 participants on 6 sites (2016) ([NN/g](https://www.n
 - **Mobile:** a hamburger, plus a Book (or Call) button that stays **outside** the panel.
 - **Header height:** ≤ 64 px on mobile [T].
 - **Header styling:** no transparency effects on scroll and no entrance animation on any header element (plugin rule 13).
-- **Dropdowns** open on click or Enter and close on Esc. Prices, CTAs and submenus are never hover-only, because hover fails on touch and keyboard (2.5.8 / 2.1.1).
+- **Dropdowns** open on click or Enter and close on Esc. Prices, CTAs and submenus are never hover-only, because hover fails on touch and keyboard (2.5.8 / 2.1.1). If a desktop panel opens on hover, a diagonal mouse move to it must not close it (elementor-implementation.md §6, hover safe zone).
+- **Current page** is marked in the menu with an underline or weight, not colour alone (1.4.1), from `aria-current="page"` [T].
 - **Mega menu content:** headings, text links and at most one small image. Never a form, map, Loop Grid or Lottie (elementor-implementation.md §6).
 - **Footer:** NAP (name, address, phone as a `tel:` link), the licence/registration number (owner-confirmed until the agency's lawyer confirms Law 4276/2014 as amended), languages and legal links. Text, links and SVG only.
 
@@ -207,6 +208,7 @@ record of the real prior rate.
 | phone | `type=tel` (never `type=number`) |
 | numbers that are not quantities | `inputmode=numeric` |
 | known dates such as a date of birth | three inputs with `inputmode=numeric` (the GOV.UK pattern); not for check-in |
+| verification code (SMS or email) | one input with `autocomplete="one-time-code"` and `inputmode=numeric`, so the phone offers the code from the message; never one box per digit, which breaks paste and autofill [T] |
 
 - Set `autocomplete` on every field: `name`, `email`, `tel`, `bday-day/month/year`, `address-line1`, `postal-code`, `country`. In Elementor Form this goes under Advanced → Custom attributes for each field (verify the field-level path).
 
@@ -218,6 +220,11 @@ record of the real prior rate.
 - Keep what the user typed.
 - Write custom messages in Greek and English.
 - Announce the success state through a status region (4.1.3).
+
+### Sending
+
+- While the form sends, the submit button is disabled and visibly busy, so a second tap cannot send the enquiry twice.
+- Elementor Pro's Form disables the button itself (**verify** on the site's version). Its spinner may be an icon-font `<i>`, which renders nothing once icon fonts are off, so keep a CSS fallback in the child theme: `.elementor-form [type="submit"][disabled]{ opacity:.6; cursor:progress; }`.
 
 ### Spam protection
 
@@ -235,6 +242,8 @@ hero form into the engine or the enquiry form.
 |---|---|---|
 | First screen | h1 + Book CTA inside 390 × 844 | [E] NN/g, MeasuringU |
 | Tap targets | WCAG minimum 24 × 24 CSS px; house rule 48 × 48 with 8 px gaps | [E] ([target-size](https://dequeuniversity.com/rules/axe/4.10/target-size)); 48 px is the web.dev/Material recommendation, about 9 mm |
+| Small icons | an icon drawn smaller than 48 px (close ×, gallery arrows, social icons) keeps a 48 px hit area through the `hit` class (elementor-implementation.md §5); hit areas never overlap | [T] |
+| Drawer scroll | `overscroll-behavior: contain` on the off-canvas and any scrollable panel, so the page behind does not scroll | [T] |
 | Inputs | font-size 16 px, min-height 48 px; `appearance` not overridden on date inputs | [E] |
 | Reflow | no horizontal scroll at 320 CSS px (`scrollWidth <= innerWidth`) | [E] 1.4.10 |
 | One DOM | responsive style variants, never hidden desktop/mobile twins | [E] design-to-elementor §3 |

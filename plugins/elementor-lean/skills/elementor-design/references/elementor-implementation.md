@@ -150,6 +150,7 @@ Wherever possible, bake the treatment into the exported file.
 | Treatment | How | Cost | Where allowed |
 |---|---|---|---|
 | Aspect ratio + crop | class `img-cover`: `aspect-ratio: 4/3` (or `3/2`); `object-fit: cover`; `object-position: center`; `width: 100%` | none; reserves space (no CLS) | everywhere, including the hero |
+| Loading placeholder | class `img-cover`: `background-color: var(--color-surface)` (the next muted token if the band is already that colour), so a slow image shows a calm block in its reserved box, not a white hole | none. Never a BlurHash/LQIP script or a blurred data-URI preview: both add bytes or JS for a few hundred ms of effect | everywhere |
 | Duotone | `e-image` with class `img-duotone` (`filter: grayscale(1) contrast(1.05)`; `mix-blend-mode: multiply`, or `screen` on dark) inside an `e-div-block` with `background: var(--color-brand)` | blend and filter create a stacking context and composite the backdrop; paint scales with area | cards and small layers below the fold; never the hero. For large photos, export the duotone into the WebP |
 | Mask (v3) | Advanced → Mask: toggle; Shape Circle / Flower / Sketch / Triangle / Blob / Hexagon / Custom (PNG or SVG); Fit: Fit / Fill / Custom; Position (9); Repeat No Repeat / Repeat / Repeat-X / Repeat-Y / Round / Space (Elementor help, 28 Sep 2025). Uses CSS `mask-image` (Baseline since Dec 2023) | a custom SVG is one more request before the image paints | below the fold |
 | Mask (V4) | prefer `clip-path: inset()/polygon()` (schema prop). Otherwise class `custom_css`: `mask-image:url("data:image/svg+xml,…"); mask-size:contain; mask-repeat:no-repeat; mask-position:center` with the SVG inlined at ≤ 2 KB | data URI = no request | below the fold |
@@ -271,13 +272,26 @@ on touch screens. For movement effects, put the transform in the child theme ins
 .elementor .card:focus-visible{ transform: translateY(-4px); }
 :where(a,button,input,select,textarea,[tabindex]):focus-visible{ outline:2px solid var(--color-focus); outline-offset:2px; }
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+:root{ accent-color: var(--color-brand); } /* native checkboxes, radios and range sliders in the brand colour */
+.elementor :is(.btn-primary,.btn-ghost,.icon-btn){ -webkit-tap-highlight-color: transparent; } /* they have their own :active press */
+.elementor .hit{ position: relative; }
+.elementor .hit::before{ content:''; position:absolute; inset:-12px; } /* a 24 px icon gets a 48 px target */
 ```
+
+**Hit area** (class `hit`: an empty Global Class so the label lands on the HTML, or Advanced → CSS
+Classes on v3 widgets; the `::before` lives in the child theme because `custom_css` cannot reach a
+pseudo-element). Use it on icons that must look
+smaller than 48 px: the close ×, gallery arrows, social icons, a dense row of text links. Set `inset` to
+`(48 px − visible size) / 2` negated. Neighbouring hit areas must not overlap, so keep icon centres
+≥ 48 px apart. An ancestor with `overflow: hidden` or `clip` cuts the area off. Prefer real padding
+(`icon-btn`) wherever the layout allows it.
 
 **Lint:**
 
 - `transition` may only animate `transform`, `opacity`, `filter`, `clip-path`, `translate`, `scale`, `rotate` (colour changes are fine for state).
 - Never `transition: all`.
 - Never animate `box-shadow` on many cards on phones.
+- Anything a user can reverse mid-way (hover, press, open/close, toggles) uses `transition`, never `@keyframes`: a transition turns back from where it is, a keyframe animation jumps to its start.
 
 Further motion belongs to `elementor-motion`.
 
@@ -301,6 +315,8 @@ replaces Nav Menu with the WordPress Menu and Menu widgets) ([mega menu help](ht
   - Breakpoint: None | Mobile Portrait (> 767 px) | Tablet Portrait (> 1024 px).
 - **Dropdown content:** headings, text links and at most one `e-image` ≤ 40 KB. **Never** a Form, Google Map, Loop Grid or Lottie: they render server-side in the header of every page and are only hidden with CSS.
 - **Keyboard:** rely on the built-in dropdown button with `aria-expanded`. Style `.e-n-menu-dropdown-icon:focus-visible`. Do **not** add a `:focus-within` hack. Open On Hover is acceptable only if Tab + Enter opens and Esc closes the dropdown; otherwise use Click.
+- **Hover safe zone:** with Open On Hover, a diagonal mouse path from the item to the panel crosses empty space and the panel closes (the "safe triangle" problem). Keep the panel touching its trigger (no top margin or gap), or bridge the gap in child-theme CSS with a transparent `::before` on the panel, `bottom: 100%`, full width, as tall as the gap (**verify** the panel class in the rendered header, e.g. `.e-n-menu-content`). Panels with more than one column open on Click.
+- **Current page:** WordPress prints `aria-current="page"` on the current menu link, and Nav Menu also adds `.elementor-item-active`. Style it in child-theme CSS with an underline or weight, never colour alone (1.4.1): `.elementor-nav-menu a[aria-current="page"]{ text-decoration: underline; text-underline-offset: .3em; }`. Check that the Menu (mega) widget prints it too (**verify**).
 - **RUCSS/UCSS safelist:** `.e-active`, `.e-n-menu-dropdown-icon`, `[aria-expanded]`, `.e-n-menu-mobile`, `.e-n-menu-tablet`, `.e-n-menu-layout-dropdown`, plus the popup and off-canvas list in design-to-elementor §3 (the corpus list was cut; **verify** the remaining `.e-n-menu-*` classes in the rendered header).
 
 **Off-Canvas** (the mobile drawer, inside the header, never a popup):
@@ -313,6 +329,7 @@ replaces Nav Menu with the WordPress Menu and Menu widgets) ([mega menu help](ht
 - Disable Page Scrolling: default
 - Overlay: on, colour at 40 %
 - Trigger: a real button in the header with an accessible name
+- Scrolling: `overscroll-behavior: contain` in child-theme CSS on the drawer's scrolling element, so scrolling to the end of the menu never scrolls the page behind it (**verify** the element class)
 
 Keep the Book button outside the drawer.
 

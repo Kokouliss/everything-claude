@@ -162,7 +162,9 @@ Mark each item for every page. A page is not done while any item applies to it a
 - [ ] Logo top-left, links to the home page of the current language, exact width/height.
 - [ ] Desktop: main links visible without hover. Mobile: hamburger plus a Book/Call button that stays visible outside the panel.
 - [ ] Sticky header: opaque, ≤ 64 px on mobile, no animation except a shrink. `scroll-padding-top` set so focused and anchored elements are not covered.
-- [ ] Dropdowns open on click/Enter and close on Esc. Nothing is hover-only.
+- [ ] Dropdowns open on click/Enter and close on Esc. Nothing is hover-only. A hover panel survives a diagonal mouse move to it.
+- [ ] The current page is marked in the menu (`aria-current="page"`) with an underline or weight, not colour alone.
+- [ ] A skip link to the main content is the first focusable element and shows on focus (Hello ships one; check custom themes).
 - [ ] Language switcher on every template. Each item carries its own `lang`.
 
 **Conversion path**
@@ -181,15 +183,24 @@ Mark each item for every page. A page is not done while any item applies to it a
 
 **States** (six content states; verify the list in `ecc:frontend-design-direction`)
 - [ ] Form: inline error next to the field (text, colour and icon), the user's input kept, a success message, both languages.
+- [ ] Form sending: the submit button is disabled and visibly busy, so a second tap cannot send twice.
 - [ ] Loop Grid: empty state. Booking widget: loading, partial and no-availability states.
 - [ ] 404 page in each language, with navigation and a search or home CTA.
 
 **Mobile and accessibility**
-- [ ] Targets ≥ 48 px with 8 px gaps. No horizontal scroll at 320 px. Body text ≥ 16 px.
+- [ ] Targets ≥ 48 px with 8 px gaps, measured on the hit area: small icons use the `hit` class. No horizontal scroll at 320 px. Body text ≥ 16 px.
+- [ ] The off-canvas menu has `overscroll-behavior: contain`, so the page behind it does not scroll.
 - [ ] Contrast pairs pass (script output kept). The focus ring is 2 px at ≥ 3:1 on every interactive element.
 - [ ] `<html lang>` matches the page. Greek capitals are typed as capitals, not made with `text-transform`.
 - [ ] Optional bottom Book/Call bar: CSS only, opaque, ≤ 56 px, 2 targets, hidden on /book.
 - [ ] Cookie banner is a fixed bottom sheet with small type and can never be the LCP. No accessibility overlay widget.
+
+**Polish** (all CSS, 0 KB of JS; how-to in elementor-implementation.md §2, §3, §5)
+- [ ] Prices use `tabular-nums`. Headings use `text-wrap: balance`, body text `text-wrap: pretty`.
+- [ ] Images sit on a muted surface colour in their reserved box while loading. No BlurHash or LQIP script.
+- [ ] Native checkboxes, radios and sliders take the brand colour through `accent-color`.
+- [ ] Hover movement is wrapped in `@media (hover:hover)`, so it never sticks after a tap. Buttons have a press state.
+- [ ] Hover, press and open/close use transitions, so a state reverses smoothly when the pointer leaves mid-way.
 
 ## Return
 

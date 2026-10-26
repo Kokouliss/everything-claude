@@ -70,7 +70,8 @@ below-the-fold or desktop-only version.
 Go down the ladder and stop at the first rung that delivers the effect as designed.
 
 1. **CSS (0 KB):**
-   - transitions for hover, press and focus;
+   - transitions for hover, press, focus and open/close. Never `@keyframes` for a state the user
+     can reverse mid-way: a transition turns back from where it is, a keyframe animation jumps;
    - scroll-driven `view()` / `scroll()` inside `@supports` for reveals, parallax, curtains and
      progress;
    - `@starting-style` for panels and popups;

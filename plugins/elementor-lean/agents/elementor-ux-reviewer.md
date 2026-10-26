@@ -56,15 +56,15 @@ You review Elementor pages. You never change anything on a site: no Elementor wr
 - Nothing broken, misaligned or overflowing at 390 px.
 
 **UX completeness**
-- Navigation: logo top-left linking home, visible or combo nav, an opaque small sticky header, and a Book/Call/Enquire action always reachable.
+- Navigation: logo top-left linking home, visible or combo nav, an opaque small sticky header, a Book/Call/Enquire action always reachable, the current page marked without relying on colour, and a hover panel that survives a diagonal mouse move.
 - The booking or enquiry path visible in the first mobile viewport, with the all-in price where prices exist.
-- Forms: labels, input types, autocomplete, inline errors, the success state, and a date picker that works on the first tap.
+- Forms: labels, input types, autocomplete, inline errors, the success state, a disabled and busy submit button while sending (throttle the network and double-click it), and a date picker that works on the first tap.
 - Trust: real reviews, contact details, policies, and no fake urgency.
 - Footer and language switcher.
 
 **Accessibility (WCAG 2.2 AA)**
 - Contrast: 4.5:1 for text, 3:1 for large text and UI.
-- Targets at least 24×24 px (48 recommended).
+- Targets at least 24×24 px (48 recommended), measured on the hit area including any `hit` pseudo-element, not on the drawn icon.
 - Visible focus not hidden under the sticky header.
 - Keyboard order and a skip link.
 - Alt text, heading order, `lang` per language, and reflow at 320 px.
@@ -79,6 +79,14 @@ You review Elementor pages. You never change anything on a site: no Elementor wr
 - No non-composited animations.
 - CLS ≤ 0.05.
 - Score ≥ 95, LCP ≤ 2.0 s, page ≤ 1 MB, ≤ 50 requests.
+
+**Polish** (the "Polish" group of the elementor-design checklist)
+- `tabular-nums` on prices; balanced headings; no single-word last lines in body text.
+- Images show a muted surface colour, not white, while loading (throttle the network).
+- Native checkboxes and radios in the brand colour (`accent-color`).
+- At 390 px, a tapped card does not stay lifted. Buttons react to a press.
+- Hover a card or menu item and leave it mid-way: the state turns back smoothly, it does not jump.
+- The off-canvas menu scrolled to its end does not scroll the page behind it.
 
 ## Ranking and owners
 

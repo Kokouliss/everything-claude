@@ -223,6 +223,7 @@ Variables `space-1…space-n` and **never** use a bare `0`; write `0px` (element
 - For editorial pages, use an asymmetric 6-column grid with 4/2 spans that collapses to one column on mobile.
 - Cards: one column on mobile.
 - Concentric radii: outer radius = inner radius + padding.
+- Optional, zero cost: smoother "squircle" corners on cards and buttons with `@supports (corner-shape: squircle){ .elementor .card, .elementor .btn-primary{ corner-shape: squircle; } }` in child-theme CSS. Browsers without it keep the plain radius. Squircle corners look tighter at the same radius, so judge it on screenshots. Chromium-only when this was written (verify support).
 - Use borders for separation. Use shadows only on things that float.
 - Avoid cards nested inside cards (tasteskill image-to-code anti-nested-box rule).
 
