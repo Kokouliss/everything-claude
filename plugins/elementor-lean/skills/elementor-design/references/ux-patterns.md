@@ -130,6 +130,7 @@ Dec 2020): no artificial scarcity, genuine deals, and no price presented as a di
   - no review-widget or social-feed script, because these are third-party JS (plugin rule 6).
 - **Contact and identity** in the footer [E]: phone, address and licence number.
 - **The `<form>` stays static** until interaction.
+- **No AI-generated or AI-altered photo** that shows the property, food or people as real. From 2 Aug 2026 the EU AI Act Art. 50(4) requires such images to be disclosed, and under the UCPD they can mislead [E] ([2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj); verify with the agency's lawyer). A chat assistant, if one is added, says in its first message that it is automated (Art. 50(1)) and loads on interaction (plugin rule 5).
 
 ### Urgency without dark patterns [E]
 
@@ -177,6 +178,7 @@ record of the real prior rate.
 - Date (native `input type="date"`, `min` = today), then ticket types with quantity steppers that have 48 px targets, then a running all-in total, then checkout.
 - Checkout: Canvas or a minimal header. No Menu Cart in the header: its `get_refreshed_fragments` XHR took 1.5–5 s (design-to-elementor §3, unreviewed).
 - Shop merchandise is covered by the prior-price rule.
+- The running total and the cart count update one `role="status"` `aria-atomic="true"` phrase ("3 εισιτήρια, 87 € με ΦΠΑ"), never a bare number [E] 4.1.3. Format it with `Intl` (§7).
 
 **Restaurant reservation** (derive)
 
@@ -200,6 +202,7 @@ record of the real prior rate.
 
 - Use `<form>`, `<label for>` and `<button>`. Give each input one visible label.
 - Never use a placeholder as the label or as the format hint (fails 1.3.1 and 3.3.2).
+- Mark required fields in the label text: "(required)" / "(υποχρεωτικό)". An asterisk alone needs a legend above the form [T].
 - Use the right input type:
 
 | Input | Type |
@@ -220,11 +223,20 @@ record of the real prior rate.
 - Keep what the user typed.
 - Write custom messages in Greek and English.
 - Announce the success state through a status region (4.1.3).
+- **Focus after a failed submit** [E] 3.3.1: native `required` validation already focuses the first invalid field. Errors that come back from the server after the AJAX call must move focus too: to the first invalid field, or, on a form with more than 6 fields, to an error summary at the top (`role="alert"`, `tabindex="-1"`, a heading, one link per invalid field). The focused field must sit clear of the sticky header.
+- Each invalid field gets `aria-invalid="true"` and its error is linked through `aria-describedby`. Whether Elementor Pro Form prints these is unconfirmed (verify).
 
 ### Sending
 
 - While the form sends, the submit button is disabled and visibly busy, so a second tap cannot send the enquiry twice.
 - Elementor Pro's Form disables the button itself (**verify** on the site's version). Its spinner may be an icon-font `<i>`, which renders nothing once icon fonts are off, so keep a CSS fallback in the child theme: `.elementor-form [type="submit"][disabled]{ opacity:.6; cursor:progress; }`.
+- Keep the submit button enabled until sending starts. A button greyed out until the form is complete does not say what is missing.
+- Each checkbox or radio row (consent, ticket options) is one target together with its label, with no dead gap, and at least 48 px tall.
+
+### Login and sign-up (forum, WooCommerce account)
+
+- Paste and password managers work: `autocomplete="username"`, `current-password` and `new-password` [E] 3.3.8.
+- No text-transcription or maths CAPTCHA. Use the honeypot. Offer a magic link or passkey where the forum plugin supports it (verify).
 
 ### Spam protection
 
@@ -244,6 +256,9 @@ hero form into the engine or the enquiry form.
 | Tap targets | WCAG minimum 24 × 24 CSS px; house rule 48 × 48 with 8 px gaps | [E] ([target-size](https://dequeuniversity.com/rules/axe/4.10/target-size)); 48 px is the web.dev/Material recommendation, about 9 mm |
 | Small icons | an icon drawn smaller than 48 px (close ×, gallery arrows, social icons) keeps a 48 px hit area through the `hit` class (elementor-implementation.md §5); hit areas never overlap | [T] |
 | Drawer scroll | `overscroll-behavior: contain` on the off-canvas and any scrollable panel, so the page behind does not scroll | [T] |
+| Zoom | the viewport meta never has `user-scalable=no` or `maximum-scale=1`; iOS input zoom is fixed with 16 px inputs instead | [E] 1.4.4; Lighthouse `meta-viewport` |
+| Repeated taps | `touch-action: manipulation` on controls (elementor-implementation.md §5), so fast taps on steppers, gallery arrows and calendar days do not zoom the page; pinch zoom keeps working (verify on an iPhone) | [T] |
+| Tables | rate, ticket and menu tables: under 768 px stack each row into a card, or wrap the table in `overflow-x:auto` with `role="region"`, an `aria-label` and `tabindex="0"`. The page itself never scrolls sideways | [E] 1.4.10 |
 | Inputs | font-size 16 px, min-height 48 px; `appearance` not overridden on date inputs | [E] |
 | Reflow | no horizontal scroll at 320 CSS px (`scrollWidth <= innerWidth`) | [E] 1.4.10 |
 | One DOM | responsive style variants, never hidden desktop/mobile twins | [E] design-to-elementor §3 |
@@ -267,6 +282,13 @@ Lighthouse 13 ([changelog](https://raw.githubusercontent.com/GoogleChrome/lighth
   - The gain is knowledge-panel and Maps details and consistent NAP, not rich results with prices.
   - Check with the Rich Results Test: 0 errors.
 - **Every content image has alt text** in the page language. Decorative images have empty alt.
+- **Answers for guests and answer engines** (method from [bencium-aeo](https://github.com/bencium/bencium-marketplace); its percentages have no source, so never quote them):
+  - Home, room/villa, location, tickets and menu pages get a short FAQ band built from real guest questions: check-in/out, parking, distance to the beach, airport and port, transfers, pets, cots, step-free access, breakfast hours, cancellation, season dates. The owner confirms every answer. Never invent one.
+  - The first sentence answers on its own and names the place: "<Villa> is 80 m from <beach> and 25 km from Heraklion airport", not "We are close to the beach" [T].
+  - Answers are in the HTML on load, in the page language, as native `<details>` or plain text. Never injected by JS, in a popup or in a late tab.
+  - FAQPage gives hotels no rich result since Aug 2023 [E] ([Google](https://developers.google.com/search/blog/2023/08/howto-faq-changes)). Add it only when it mirrors visible text, and from one source: the mu-plugin or the widget's FAQ Schema switch, never both (verify the switch on Nested Accordion in 4.3).
+  - Seasonal businesses write the season dates in the text and in `openingHoursSpecification` with `validFrom`/`validThrough`. Show "Updated: <date>" on rates, hours and the FAQ.
+  - For robots.txt rules for AI crawlers and llms.txt, run `sitelemetry:ai-visibility`.
 
 ## 6. WCAG 2.2 AA checklist with numbers
 
@@ -278,21 +300,28 @@ accessiBe, UserWay). They add 100–300 KB of JS and a floating button that can 
 | SC (level) | Requirement | Number | Elementor implementation |
 |---|---|---|---|
 | 1.1.1 (A) | Text alternatives | alt on every content image | Media library alt; `e-image` alt |
+| 1.1.1 / 4.1.2 (A) | Icon-only controls have a name | every icon-only link or button (phone, close ×, gallery arrows, social, bottom-bar Book) has a name in the page language; decorative SVGs are `aria-hidden="true"` | `aria-label` through Attributes (V4 General tab, v3 Pro Advanced tab; verify), set in each language's header; axe `link-name`, `button-name` |
+| 1.2.2 (A) / 1.2.5 (AA) | Captions, audio description | captions on every video with speech; a description where the picture carries what the soundtrack does not | YouTube/Vimeo caption tracks behind the facade, or `<video>` + `<track kind="captions" srclang="el">` and `en` in an HTML widget (no script); the Video widget has no track field (verify) |
 | 1.3.1 (A) / 3.3.2 (A) | Labels, structure | visible `<label>` per field | Form: labels shown; never placeholder-only |
 | 1.4.1 (A) | Not colour alone | errors = text + colour + icon | `form-error` class |
 | 1.4.3 (AA) | Text contrast | 4.5:1 body; 3:1 at ≥ 24 px regular / 18.66 px bold | Contrast script on the Variables |
 | 1.4.4 (AA) | Resize text | 200 % zoom enlarges text | `clamp()` with a `rem` term |
 | 1.4.10 (AA) | Reflow | 320 CSS px, no 2-D scroll | Mobile variants; no fixed widths |
 | 1.4.11 (AA) | Non-text contrast | 3:1 borders, icons, focus, button edges | `color-border`, `color-focus` |
+| 1.4.12 (AA) | Text spacing | nothing clips at line-height 1.5, letter 0.12em, word 0.16em, paragraph 2em | no fixed heights or `overflow:hidden` on cards, buttons, badges or the book bar; test with the Greek strings |
 | 2.1.1 / 2.1.2 (A) | Keyboard, no trap | every control reachable; modals and off-canvas release focus | Menu dropdown button; Off-Canvas Esc on |
 | 2.2.2 (A) | Pause, stop, hide | anything auto-moving for > 5 s alongside other content needs a control | No auto carousels; marquee with a pause button (elementor-motion) |
+| 2.4.4 (A) | Link purpose | no row of identical "Read more" / "Περισσότερα" links | Loop item button text from the Post Title dynamic tag, or the card title is the link; Lighthouse `link-text` |
 | 2.4.7 (AA) | Focus visible | house rule: 2 px ring, ≥ 3:1 | Global `:focus-visible` in child-theme CSS |
-| 2.4.11 (AA) | Focus not obscured | the focused element is not hidden by the sticky header or bar | `scroll-padding-top`; bar hidden while it would cover |
+| 2.4.11 (AA) | Focus not obscured | the focused element is not hidden by the sticky header, the bottom bar, the cookie sheet or a chat bubble | `scroll-padding-top`; bar hidden while it would cover; Tab through with the cookie sheet still open |
+| 2.5.3 (A) | Label in name | the accessible name contains the visible text, best at the start | `aria-label` only on icon-only controls, in the page language; never an English `aria-label` in the Greek header or in a shared Component |
 | 2.5.7 (AA) | Dragging | single-pointer alternative for sliders and galleries | Arrows/buttons on any carousel below the fold |
 | 2.5.8 (AA) | Target size | ≥ 24 × 24 px (house rule 48) | `btn-*`, `icon-btn` min 48 px |
 | 3.1.1 (A) / 3.1.2 (AA) | Language | `html[lang]` per page; `lang` on other-language parts | Polylang; switcher items `lang="el"` / `lang="en"` |
+| 3.2.3 (AA) / 3.2.6 (A) | Consistent navigation and help | the menu and the phone, email, chat and contact links keep the same relative order on every page of one language | one header and footer per language; the minimal booking header keeps the phone |
 | 3.3.1 (A) / 3.3.3 (AA) | Errors identified with suggestions | inline, plain language | Form custom messages EL/EN |
 | 3.3.7 (A) | Redundant entry | do not re-ask entered data | Carry dates into engine/enquiry |
+| 3.3.8 (AA) | Accessible authentication | no transcription or puzzle test to log in; paste and password managers work | forum and Woo login (§3 "Login and sign-up") |
 | 4.1.2 (A) | Name, role, value | no div-buttons; `aria-expanded` on toggles | Native Button/Menu widgets |
 | 4.1.3 (AA) | Status messages | form success/error announced | Form messages in a live region (verify the widget's output) |
 
@@ -302,9 +331,18 @@ accessiBe, UserWay). They add 100–300 KB of JS and a floating button that can 
 **Testing:**
 
 - Lighthouse accessibility ≥ 95 on the home, room, offer, contact and booking pages.
-- axe: 0 violations.
-- A manual Tab pass with the ring visible throughout.
-- VoiceOver/NVDA spot check (the method of `design:accessibility-review`).
+- axe: 0 violations. Lighthouse runs axe; the command that lists them is the accessibility gate in breakage-checklist §4.
+- A keyboard walk: the ux-reviewer's step 3a script, then real key presses on the menu, popups, date field and cookie banner.
+- Screen reader: an agent cannot run VoiceOver or TalkBack. Fill the "Announced As" column of `design:accessibility-review` with the name, role and state from the accessibility snapshot, never with predicted speech. Hand the real check to a person: VoiceOver on iPhone Safari and TalkBack on Android Chrome, on the booking or enquiry flow, in both languages [T] (method from [AccessLint](https://github.com/AccessLint/skills)).
+
+**Site verdict** [E] ([WCAG-EM](https://www.w3.org/TR/WCAG-EM/)). One page is a page check. For "is the site accessible" or the EAA accessibility statement, review a sample:
+
+- One page per Theme Builder template: home, each Single (room, villa, offer, post), Archive/Loop Grid, a plain Page, 404, Search, each popup. Both languages.
+- Each conversion flow end to end: search → room → vendor hand-off; tickets → checkout (staging); reservation; forum sign-up and login.
+- States: off-canvas and mega menu open, form error, form success, empty Loop Grid, cookie banner before consent.
+- Two random URLs from `/wp-sitemap.xml` or the SEO plugin's sitemap.
+- One failing page fails that criterion for the whole site. Never average.
+- The statement says "partially conformant" and lists the failing and undetermined criteria, unless every AA criterion is a measured pass on every sampled page (verify the wording the Greek transposition requires).
 
 ## 7. Multilingual (Greek + English) UX
 
@@ -317,11 +355,28 @@ accessiBe, UserWay). They add 100–300 KB of JS and a floating button that can 
 - **Lengths:** design every component with the Greek strings.
   - Check button text, menu items at 1024 px and card titles at 390 px for clipping.
   - Run `design:ux-copy` in both languages and apply its localisation notes.
+  - **Long words** [E] 1.4.10: Greek headings break only at spaces, and a word like ΔΙΑΘΕΣΙΜΟΤΗΤΑ can overflow 320 px at h1 size. Test the longest real word of each heading at 320 px. Reduce the size first, then add `&shy;` in that word. Heading and card-title classes get `overflow-wrap: break-word` as the safety net (elementor-implementation.md §4). No `hyphens: auto` on headings and no justified text; Greek support for `hyphens: auto` on body text is unconfirmed (verify).
+  - **Truncation** [T]: never `line-clamp` a room name, price, CTA, error or policy text to make cards equal height. Clamp only teaser text that links to the full page.
 - **Dates and forms:**
   - spelled-out month names;
   - form labels and errors in the page language;
   - the vendor calendar's locale matching `html[lang]`;
   - `lang` set on the form.
+- **Numbers, prices, dates and punctuation** [E] (CLDR, checked with Node 22 `Intl`):
+
+  | | Greek page | English page |
+  |---|---|---|
+  | Price | `1.250 €` (no-break space before €) | `€1,250` |
+  | Price-from on a card | "από 1.250 € / νύχτα, με φόρους" | "from €1,250 / night, incl. taxes" |
+  | Date | `14 Ιουλίου 2026` (month in the genitive) | `14 July 2026` |
+  | Time | `14:00` | `14:00` |
+  | Ranges (en dash) | 1–3 Ιουνίου, 2–4 άτομα | 1–3 June, 2–4 guests |
+  | Quotes | «…» (“…” inside) | “…” |
+  | Question mark | `;` | `?` |
+
+  - A no-break space goes between a number and its unit: `45 m²`, `3 km`. Write `…`, not `...` [T].
+  - Prices, totals or dates written by JS (the water-park running total) use `Intl.NumberFormat(document.documentElement.lang, {style:'currency', currency:'EUR'})` and `Intl.DateTimeFormat(lang, {hourCycle:'h23'})`, because ICU's Greek default time is `2:00 μ.μ.` Never build a price as `'€' + n`.
+- **Machine translation** [T]: give the language switcher and the brand name (logo link, footer name) `translate="no"` or the empty Global Class `notranslate`. Otherwise Chrome's translator turns "Ελληνικά" into "Greek" and translates the hotel's name.
 - **Fonts:** both families must have Greek glyphs. Check that ά, ώ and ς render in the brand font, not a fallback (design-direction.md §1).
 - **Token names stay ASCII** (`color-brand`, not `Κύριο Χρώμα`). Greek or spaced Variable labels produce invalid or ungreppable CSS custom properties (elementor-implementation.md §1).
 - **Domains:** if Polylang uses one domain per language, switching language is cross-origin. Cross-document view transitions then do nothing, which is harmless.

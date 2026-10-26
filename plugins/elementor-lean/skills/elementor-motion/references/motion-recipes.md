@@ -16,6 +16,9 @@ Rules every recipe follows:
 - Content is visible when JS is off. CSS never pre-hides content. Scroll-driven start states exist
   only inside `@supports`, and JS hides only the elements it is about to animate that are still off
   screen.
+- To rotate or scale a part of an inline SVG, set `transform-box: fill-box; transform-origin: center`
+  on that part, or it turns around the SVG's corner. To move a whole icon, animate its wrapper, not
+  the `<svg>`.
 
 ## Shared setup
 
@@ -564,6 +567,14 @@ Transitions plugin (Settings > Reading). Its reduced-motion handling and 400 ms 
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: 240ms; }
 [data-elementor-type="header"] { view-transition-name: site-header; } /* header holds still */
+```
+
+A header with `backdrop-filter` flashes its old snapshot during the transition. Pin it:
+
+```css
+::view-transition-group(site-header) { animation: none; z-index: 100; }
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
 ```
 
 **Do not:**

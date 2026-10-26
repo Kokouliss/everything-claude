@@ -7,7 +7,7 @@
       "name": "elementor-lean",
       "source": "./plugins/elementor-lean",
       "description": "Build, design, animate, audit and debloat Elementor sites so they look sophisticated and score high on PageSpeed.",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "category": "productivity"
     }
   ]

@@ -2,7 +2,7 @@
 
 One lever at a time. Before it: record the exact before-values and a baseline (screenshots, console, CLS, tracking, Lighthouse). After it: purge, run the gates below in order (cheapest and most decisive first), keep the step only if every gate is green, and on any red run the undo for that one step — which only works because the step recorded its before-values first. "Without breaking anything" means this chain passed on the pages where the change bites, not that the home page looked fine once. Staging first where one exists, then production with the same recorded key set.
 
-Gate order per step: purge → console/network diff → interaction smoke tests → CLS → screenshot diff → Elementor editor → tracking → Lighthouse (last, alone).
+Gate order per step: purge → console/network diff → interaction smoke tests → accessibility → CLS → screenshot diff → Elementor editor → tracking → Lighthouse (last, alone).
 
 ## 1. Before any change — what to record
 
@@ -158,6 +158,20 @@ await expect(page.locator('.ui-datepicker, .wc-bookings-date-picker, .yith-wcbk-
 | Multilingual (Polylang/WPML) | Switch language from each page; `/` with `Accept-Language: el` and `en`; second load per language; add to cart in the second language (WCML) | `html[lang]` changes, 200, HIT on the second load per language; `/` is not an uncacheable 302 unless intended ([WP Rocket multilingual](https://docs.wp-rocket.me/article/76-translation-multilingual-plugins)); with Guest Mode, `html[lang]` asserted after the AJAX swap; fragments return in the chosen language |
 
 Markup differs between Elementor 4.2.3 (`elementor-nav-menu--dropdown`) and 4.3.x (nested `e-n-menu`), so locators are per site. Confidence medium on the booking fallback classes — confirm during the baseline run.
+
+**Accessibility gate.** Unused-CSS removal drops `:focus-visible`, skip-link and `.elementor-screen-only` rules, because they match only after a key press. Delay-JS can leave the menu toggle dead until a mouse or touch event (verify each optimiser's trigger events). Before and after each step, per page (tested on a fixture with Lighthouse 12: an added image without alt shows as `image-alt …`, an improvement prints `[]`):
+
+```sh
+npx lighthouse "$url" --only-categories=accessibility --form-factor=mobile \
+  --chrome-flags="--headless=new --no-sandbox" --output=json --output-path="$out/$name.a11y.json" --quiet
+jq -c '[.audits|to_entries[]|select(.value.score==0)|.key as $id|.value.details.items[]?|"\($id) \(.node.selector)"]|sort' \
+  "$out/$name.a11y.json" > "$out/$name.a11y.$step.set"
+jq -n --slurpfile b "$out/$name.a11y.$prev.set" --slurpfile a "$out/$name.a11y.$step.set" '$a[0]-$b[0]'   # must print []
+```
+
+- A changed selector shows as one new and one fixed entry. Read both lists before calling it a regression. A second failure on an identical selector does not show; the count in the `.set` file does.
+- Then run the ux-reviewer's keyboard walk (its step 3a). The count of ring-less stops must not rise, and the skip link stays at stop 0.
+- From a cold load with no mouse movement, Tab to the menu toggle and open it with Enter.
 
 ## 5. Tracking still fires
 

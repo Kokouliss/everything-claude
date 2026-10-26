@@ -42,6 +42,15 @@ for the public plugin directory (no `license`, no icon), which this private plug
 The references were produced by adversarially reviewed research (October 2026); each claim keeps its
 sources and a confidence mark. Re-verify anything marked medium/low before relying on it.
 
+Version 0.3.0 adds rules distilled from five public skill repos, keeping only what the plugin did not
+already have and what fits Elementor under the 95+ budget: [AccessLint/skills](https://github.com/AccessLint/skills)
+(grading method, keyboard walk, WCAG-EM sample), [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)
+(Web Interface Guidelines), [bencium/bencium-marketplace](https://github.com/bencium/bencium-marketplace)
+(typography, design audit, answer-first FAQ), [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+(UX guidelines, corrected search queries) and [anthropics/skills](https://github.com/anthropics/skills)
+(the default-look warning). No file was copied and no dependency added; the ui-ux-pro-max suite stays a
+separate installed plugin.
+
 ## Requirements
 
 - A Novamira MCP connection to the site (`mcp__novamira-<site>__…` tools).

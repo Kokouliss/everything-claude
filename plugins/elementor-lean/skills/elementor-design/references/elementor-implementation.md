@@ -142,6 +142,10 @@ cut from the corpus; **verify** with `elementor-get-style-schema`.
 A child-theme stylesheet is one more CSS request. Confirm that `render-blocking-insight` stays at 0 items
 through the cache plugin's critical CSS. Otherwise move the rules to kit Custom CSS.
 
+**One stacking order** [T]. Set it once as child-theme custom properties and use them everywhere:
+header < bottom bar < off-canvas < popup < cookie sheet, e.g. `--z-header:100; --z-bar:110;
+--z-drawer:200; --z-popup:300; --z-consent:400`. Never copy a vendor's `999999`.
+
 ## 2. Image treatments and their cost
 
 **The LCP image stays a plain, unmasked, unfiltered `<img>`.** Treatments go on images below it.
@@ -176,8 +180,8 @@ text. If the Size control or Size Variable rejects the string, put it in the cla
 ```text
 heading-display  props: font-family: var(--font-heading); font-weight: 650; line-height: 1.05; letter-spacing: -0.02em
                  custom_css: font-size: clamp(2rem, 1.2rem + 3.2vw, 4.5rem); text-wrap: balance;
-body             custom_css: font-size: var(--step-0); max-width: 70ch; text-wrap: pretty;
-price            custom_css: font-variant-numeric: tabular-nums;
+body             custom_css: font-size: var(--step-0); max-width: 65ch; text-wrap: pretty;
+price            custom_css: font-variant-numeric: lining-nums tabular-nums;
 ```
 
 **Variable fonts.** Pro Custom Fonts: Elementor → Editor → Custom elements → Add New font → Add
@@ -242,6 +246,11 @@ a child, Grid Column / Grid Row span, Align Self & Order; dense auto-placement f
 **Anchors.** Set `scroll-margin-top` (Anchor offset) on anchored sections, and
 `html{scroll-padding-top: var(--header-h)}` in the child theme.
 
+**Long words and URLs** (1.4.10). Heading and card-title classes get `overflow-wrap: break-word` in
+`custom_css`. A text child of an `e-flexbox` row or a grid cell gets `min-width: 0`, or it refuses to
+shrink. Footer email and address lines and forum post bodies get `overflow-wrap: anywhere`. Never
+`word-break: break-all` on prose.
+
 To verify: screenshots at 390, 768, 1024 and 1440 match the design frame within 5 px (the kallyas parity
 loop). DevTools Layout shows the grid.
 
@@ -276,6 +285,7 @@ on touch screens. For movement effects, put the transform in the child theme ins
 .elementor :is(.btn-primary,.btn-ghost,.icon-btn){ -webkit-tap-highlight-color: transparent; } /* they have their own :active press */
 .elementor .hit{ position: relative; }
 .elementor .hit::before{ content:''; position:absolute; inset:-12px; } /* a 24 px icon gets a 48 px target */
+:where(a,button,input,select,label,summary){ touch-action: manipulation; } /* no double-tap zoom on fast taps; pinch zoom stays */
 ```
 
 **Hit area** (class `hit`: an empty Global Class so the label lands on the HTML, or Advanced → CSS

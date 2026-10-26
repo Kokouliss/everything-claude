@@ -57,9 +57,19 @@ elementor-implementation.md §0.
    - **Figma or XD:** extract the tokens as in design-to-elementor §1.
    - **Screenshots:** invoke `taste-skill:image-to-code-skill` (image-to-code) and use only its extraction rules (text, typography, spacing, button, colour) to fill the token sheet. Ignore its HTML output.
    - **Live reference site:** invoke `anthropic-skills:extract-design-system <url>` and read `.extract-design-system/normalized.json`.
-   - **Optional first token draft:** run `ui-ux-pro-max:ui-ux-pro-max` (`scripts/search.py "<sector>" --design-system --density 3 -p "<site>"`; check `--help` for the flags). It over-produces, so prune it in step 2.
+   - **Optional first token draft:** run the search script from the base directory that `ui-ux-pro-max:ui-ux-pro-max` reports (not this plugin's root): `python3 scripts/search.py "<query>" --design-system --density 3 --variance 2 -f markdown -p "<site>"`. A bare sector word misses: "villa" and "restaurant" fall back to "General", and "water park" matches a hydration-reminder app. Use these queries:
+
+     | Site | Query | Expected category |
+     |---|---|---|
+     | hotel, villa | `"hotel villa"` | Hotel/Hospitality |
+     | restaurant | `"restaurant reservation"` | Restaurant/Food Service |
+     | water park | `"ticketing event tickets"` | Ticketing / Box Office |
+     | film festival | `"cinema theater"` | Theater/Cinema |
+     | forum | `"forum discussion"` | Forum / Discussion Board |
+
+     Check the match first with `python3 scripts/search.py "<query>" -d product -n 1`: it names the matched product type, or prints "Found: 0 results", after which the design system falls back to generic defaults. If it misses or names another product, change the query or skip the draft. Never pass `--motion`, `--persist` (it writes `design-system/` into the working folder) or `--stack` (it has no WordPress stack). For Greek-capable fonts, query `"greek serif display" -d google-fonts`, then run the glyph gate. The draft over-produces, so prune it in step 2.
 4. Run the Greek glyph check on every font proposed (design-direction.md §1). If a font fails, swap it for one of the Greek-capable pairings.
-5. Present **two directions** to the owner. For each, give the two families and the fluid scale, the palette with the ratio of every text/background pair, a hero sketch with the booking or enquiry entry inside the first 390 × 844 viewport, the imagery direction, and one or two zero-JS signature details. **STOP until the owner picks one.**
+5. Present **two directions** to the owner. For each, give the two families and the fluid scale, the palette with the ratio of every text/background pair, a hero sketch with the booking or enquiry entry inside the first 390 × 844 viewport, the imagery direction, and one or two zero-JS signature details. At most one of the two may use the cream + serif + terracotta default (design-direction.md §2, "The default look"). **STOP until the owner picks one.**
 
 ### 2. Tokens
 
@@ -132,7 +142,7 @@ Do not add Interactions, entrance animations or animation libraries yourself.
 
 ### 8. Review
 
-Run the `elementor-ux-reviewer` agent on each page after motion. Fix the findings tagged `designer`, then re-run the gate.
+Run the `elementor-ux-reviewer` agent on each page after motion. Fix the findings tagged `designer`, then re-run the gate and the accessibility gate (breakage-checklist §4): every fixed finding gone, nothing new.
 
 ## Rules from other skills that do not apply here
 
@@ -143,6 +153,13 @@ Run the `elementor-ux-reviewer` agent on each page after motion. Fix the finding
 - Any palette over 8 colours, or any type setting applied per widget.
 - Glass panels: `backdrop-filter` only on the sticky header (under 100 px tall).
 - Carousels or sliders in the first viewport.
+- ui-ux-pro-max's sector picks:
+  - Styles: Liquid Glass (hotel), Vibrant & Block-based + Motion-Driven (restaurant, ticketing), Aurora UI + parallax (travel), Dark Mode with text-shadow glow (cinema, forum), Neumorphism (spa).
+  - Landing patterns: testimonial carousels, hero countdowns and early-bird timers, hero parallax or video, CTA pulse. The page order in ux-patterns.md §5 wins.
+  - Fonts: its hospitality pairings (Playfair Display, Cormorant, Cinzel, Josefin Sans, Montserrat, Jost, Bodoni Moda, Poiret One) have no Greek.
+  - Palette: its 16 colour roles collapse to ≤ 8 Variables, then rerun the contrast script.
+  - `scroll-behavior: smooth`: only inside `@media (prefers-reduced-motion: no-preference)`, and never with GSAP ScrollTrigger.
+  - Its 375 px test width: keep 320 / 390 / 768 / 1440.
 
 Do not use these skills for Elementor sites:
 
@@ -180,6 +197,9 @@ Mark each item for every page. A page is not done while any item applies to it a
 - [ ] Location: a static map image linking to Google Maps (≤ 150 KB). The map JS loads on the contact page only.
 - [ ] Every image answers a guest question and has alt text in the page language. No text is baked into images.
 - [ ] LocalBusiness / Hotel / Restaurant JSON-LD comes from the mu-plugin.
+- [ ] A short FAQ band from real, owner-confirmed guest questions, answer-first and in the HTML on load (ux-patterns.md §5).
+- [ ] No room name, price, CTA or policy text is cut off with `line-clamp`.
+- [ ] Videos with speech have Greek and English captions. No animated GIF.
 
 **States** (six content states; verify the list in `ecc:frontend-design-direction`)
 - [ ] Form: inline error next to the field (text, colour and icon), the user's input kept, a success message, both languages.
@@ -192,15 +212,20 @@ Mark each item for every page. A page is not done while any item applies to it a
 - [ ] The off-canvas menu has `overscroll-behavior: contain`, so the page behind it does not scroll.
 - [ ] Contrast pairs pass (script output kept). The focus ring is 2 px at ≥ 3:1 on every interactive element.
 - [ ] `<html lang>` matches the page. Greek capitals are typed as capitals, not made with `text-transform`.
+- [ ] Every icon-only control has a name in the page language. No row of identical "Read more" links.
+- [ ] The viewport allows zoom. Nothing clips under the 1.4.12 text-spacing test. The longest Greek heading word fits at 320 px.
 - [ ] Optional bottom Book/Call bar: CSS only, opaque, ≤ 56 px, 2 targets, hidden on /book.
 - [ ] Cookie banner is a fixed bottom sheet with small type and can never be the LCP. No accessibility overlay widget.
 
 **Polish** (all CSS, 0 KB of JS; how-to in elementor-implementation.md §2, §3, §5)
-- [ ] Prices use `tabular-nums`. Headings use `text-wrap: balance`, body text `text-wrap: pretty`.
+- [ ] Prices use `lining-nums tabular-nums` and the page language's format (`1.250 €` / `€1,250`). Headings use `text-wrap: balance`, body text `text-wrap: pretty`.
 - [ ] Images sit on a muted surface colour in their reserved box while loading. No BlurHash or LQIP script.
 - [ ] Native checkboxes, radios and sliders take the brand colour through `accent-color`.
 - [ ] Hover movement is wrapped in `@media (hover:hover)`, so it never sticks after a tap. Buttons have a press state.
 - [ ] Hover, press and open/close use transitions, so a state reverses smoothly when the pointer leaves mid-way.
+- [ ] A dark direction (the film festival) sets `:root{color-scheme:dark}`, so native pickers, selects and scrollbars match. A light site sets it only on a dark band that holds a native control.
+- [ ] `theme-color` matches the header surface: Site Settings › Background › Mobile Browser Background (verify the path).
+- [ ] The language switcher and the brand name carry `translate="no"`.
 
 ## Return
 

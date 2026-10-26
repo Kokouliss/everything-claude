@@ -36,7 +36,8 @@ curl -sA 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/130 Mobile S
 - Without a browser UA the API returns a TTF-only CSS with no subset comments.
 - For non-Google fonts, count the Greek code points (U+0370–03FF) with `fontTools`; expect ≥ 100.
 - A variable font listed as "latin" on Google may still carry Greek in the foundry's file. Check that file.
-- Record the result in the build log.
+- Non-OFL fonts: read the webfont licence first. Subsetting is a modification, and many commercial licences forbid it or cap pageviews [T].
+- Record the result and the licence in the build log.
 
 ### Pairings that pass the gate
 
@@ -84,6 +85,12 @@ For a more dramatic display size [T], the corpus example is
 Whether a Size Variable accepts a `clamp()` string on 4.3.x is unconfirmed (verify). The fallback is the
 class's `custom_css` (elementor-implementation.md §3).
 
+### Figures, optical sizes and measure
+
+- **Figures** [E] ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric)): prices, phone numbers, times and rate tables use `font-variant-numeric: lining-nums tabular-nums`. `tabular-nums` alone sets the width but keeps old-style figures, where 3, 4, 5, 7 and 9 drop below the line. EB Garamond and Alegreya default to them (verify each file). Check: render `0123456789` in the brand font.
+- **Optical sizes** [E] ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/font-optical-sizing)): Literata, Source Serif 4, Roboto Flex and Inter 4 carry an `opsz` axis (verify per file), which browsers apply automatically. Static instances drop it, and headings set from a text-size static cut look heavy. For these families prefer the subset variable woff2 (elementor-implementation.md §3, route 2).
+- **Measure** [E] ([CSS Values, ch](https://www.w3.org/TR/css-values-4/#ch)): `1ch` is the width of "0", so how many characters fit depends on the font (65ch held 67 characters of a default sans in a test). Start body text at `max-width: 65ch`, then count the rendered characters per line with the reviewer's snippet: 45–80 passes.
+
 ### Greek typographic correctness
 
 - **All-caps Greek** [E] ([MDN text-transform](https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform), [compat data](https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/properties/text-transform.json)):
@@ -92,6 +99,9 @@ class's `custom_css` (elementor-implementation.md §3).
   - So type Greek capitals in the content. Keep a `label-caps` class for Latin text only.
 - **Greek strings run longer** than English. Size buttons, menu items and cards with the Greek text, at 390 px and 1024 px [E].
 - **Glyph check:** a Greek paragraph must render in the brand font. Check ά, ώ and ς (design-to-elementor §4).
+- **Leading with accents** [T]: mixed-case Greek has many descenders (β γ ζ η μ ξ ρ φ χ ψ ς) and accented capitals (Ά Έ Ή). Mixed-case Greek headings get line-height ≥ 1.1. Check a two-line Greek h1 for touching marks. Headings typed in capitals carry no accents and may stay at 1.05.
+- **Caps tracking** [T]: text typed in capitals, in either language, gets +0.05–0.08em through one `caps` class with no `text-transform`.
+- **Long words, punctuation and number formats** are in ux-patterns.md §7.
 
 ### Polish rules for the classes [T]
 
@@ -99,7 +109,7 @@ These come from `make-interfaces-feel-better`:
 
 - `text-wrap: balance` on headings and short titles.
 - `text-wrap: pretty` on body text and captions, but not on long Greek prose (reflow cost).
-- `font-variant-numeric: tabular-nums` on prices and counters.
+- `font-variant-numeric: lining-nums tabular-nums` on prices and counters.
 
 ## 2. Colour
 
@@ -116,6 +126,8 @@ These come from `make-interfaces-feel-better`:
 - 2.999:1 fails. There is no rounding.
 - Each state (hover, focus, pressed) must keep 3:1 against its surroundings. The states do not need to contrast with each other.
 - Disabled controls are exempt.
+- Derive hover and pressed colours in the class's `custom_css`, e.g. `color-mix(in oklab, var(--color-brand) 85%, black)`, so no ninth Variable is needed. Run the contrast script on the computed colour [T].
+- `color-focus` must reach 3:1 on `color-surface` and on the inverted footer. If one colour cannot do both, use a two-tone ring: `outline: 2px solid var(--color-focus); box-shadow: 0 0 0 4px var(--color-surface)` [T].
 
 **Semantic tokens: 8 at most** [E for the count rule in design-to-elementor §1; names from the corpus]:
 
@@ -161,6 +173,8 @@ These are common to premium hotel sites:
 - Secondary buttons are outline or ghost.
 - In the first viewport, exactly one saturated element.
 - Never use the same accent for both links and decorative chips. The CTA loses prominence.
+- **The default look** ([anthropics/skills frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design); taste-skill bans it too): a cream ground near `#F4F1EA`–`#FAF9F5` with a high-contrast serif and a terracotta accent is the most common generated palette, and the worked `#faf7f2` above sits in that range. Use it only when the property's own photographs and materials give those colours, and write the reason in the direction. At most one of the two directions may use it.
+- The same goes for a tracked all-caps eyebrow above every heading, one italic or coloured word per headline, 01/02/03 markers on content that is not a sequence, and `→` after every link. Use `eyebrow` only where it carries information (a date, a place, a category).
 
 ## 3. Imagery
 
