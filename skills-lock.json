@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skills": {
+    "mobile-android-design": {
+      "source": "B4san/AC-framework",
+      "sourceType": "github",
+      "skillPath": "framework/mobile_development/.agents/skills/mobile-android-design/SKILL.md",
+      "computedHash": "abe90a327c7b0f30df201a1eb5cf17586c7b86572ae7c4d5f72394ca526ffdae"
+    }
+  }
+}
